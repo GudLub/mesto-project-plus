@@ -1,0 +1,9 @@
+export const SERVER_ERROR_MESSAGE = 'Произошла ошибка на сервере';
+export const USER_NOT_FOUND_MESSAGE = 'Пользователь не найден';
+export const USERS_NOT_FOUND_MESSAGE = 'Пользователи не найдены';
+export const CARD_NOT_FOUND_MESSAGE = 'Карточкa не найденa';
+export const CARDS_NOT_FOUND_MESSAGE = 'Карточки не найдены';
+export const INVALID_DATA_MESSAGE = 'Данные недействительны';
+export const VALIDATION_ERROR_MESSAGE = 'Ошибка валидации полей';
+export const CARD_DELITION_SUCCESS_MESSAGE = 'Карточка успешно удалена';
+export const STATUS_NOT_FOUND = 'Пользователь по указанному _id не найден';
