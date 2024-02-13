@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 import router from "./routes/index";
 
 import { handleErrors } from "./middleware/handleErrors";
+import helmet from "helmet";
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
-
+app.use(helmet());
 app.use(express.json());
 
 app.use((req: Request | any, res: Response, next: NextFunction) => {

@@ -15,7 +15,7 @@ const UserSchema = new Schema<IUser>({
   },
   about: {
     type: String,
-    required: [true, 'Поле link обязательно'],
+    required: [true, 'Поле about обязательно'],
     minlength: [2, 'Минимальная длина 2 символа'],
     maxlength: [200, 'Максимальная длина 200 символов']
   },

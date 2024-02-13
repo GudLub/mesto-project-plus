@@ -9,7 +9,7 @@ try {
   const { name, link } = req.body;
   const owner = (req as any).user._id;
   const newCard = await Card.create({ name, link, owner });
-  return res.status(constants.HTTP_STATUS_OK).send(newCard);
+  return res.status(constants.HTTP_STATUS_CREATED).send(newCard);
 } catch (error) {
   if (error instanceof mongoose.Error.ValidationError) {
     return res
@@ -48,6 +48,9 @@ export const deleteCard = async (req: Request, res: Response, next: NextFunction
 
     return res.status(constants.HTTP_STATUS_OK).send({ message: CARD_DELITION_SUCCESS_MESSAGE });
   } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+    }
     return next(error);
   }
 };
@@ -65,10 +68,13 @@ export const likeCard = async (req: Request, res: Response, next: NextFunction) 
     },
   )
   if (!likeCard) {
-    return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: CARD_NOT_FOUND_MESSAGE });
+    return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
   }
     return res.status(constants.HTTP_STATUS_OK).send(likeCard);
   } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+    }
     return next(error);
   }
 };
@@ -86,10 +92,13 @@ export const dislikeCard = async (req: Request, res: Response, next: NextFunctio
     },
   )
   if (!dislikeCard) {
-    return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: CARD_NOT_FOUND_MESSAGE });
+    return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
   }
     return res.status(constants.HTTP_STATUS_OK).send(dislikeCard);
   } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+    }
     return next(error);
   }
 };

@@ -8,7 +8,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 try {
   const { name, about, avatar } = req.body;
   const newUser = await User.create({ name, about, avatar });
-  return res.status(constants.HTTP_STATUS_OK).send(newUser);
+  return res.status(constants.HTTP_STATUS_CREATED).send(newUser);
 } catch (error) {
   if (error instanceof mongoose.Error.ValidationError) {
     return res
@@ -34,11 +34,11 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findById(req.params.userId);
-    return res.status(constants.HTTP_STATUS_OK).send(user);
-  } catch (error) {
-    if (error instanceof Error && error.name === 'NotFoundError') {
+    if (!user) {
       return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: STATUS_NOT_FOUND });
     }
+    return res.status(constants.HTTP_STATUS_OK).send(user);
+  } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
     }
@@ -57,6 +57,11 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
   }
 return res.status(constants.HTTP_STATUS_OK).send(user);
 } catch (error) {
+  if (error instanceof mongoose.Error.ValidationError) {
+    return res
+      .status(constants.HTTP_STATUS_BAD_REQUEST)
+      .send({ ...error, message: VALIDATION_ERROR_MESSAGE });
+  }
   return next(error);
 }
 };
