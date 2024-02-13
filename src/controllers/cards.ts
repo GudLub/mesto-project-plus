@@ -14,7 +14,7 @@ try {
   if (error instanceof mongoose.Error.ValidationError) {
     return res
       .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({ ...error, message: VALIDATION_ERROR_MESSAGE });
+      .send({ ...error, VALIDATION_ERROR_MESSAGE });
   }
   return next(error);
 }
@@ -22,7 +22,10 @@ try {
 
 export const getCards = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cards = Card.find({});
+    const cards = await Card.find({});
+    if (!cards) {
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send(CARD_NOT_FOUND_MESSAGE);
+    }
     return res.status(constants.HTTP_STATUS_OK).send(cards);
   } catch (error) {
     return next(error);
@@ -35,21 +38,21 @@ export const deleteCard = async (req: Request, res: Response, next: NextFunction
 
     const card = await Card.findById(id);
     if (!card) {
-      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send(CARD_NOT_FOUND_MESSAGE);
     }
 
     const userId = (req as any).user._id;
 
     if (!userId || card.owner.toString() !== userId) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send(INVALID_DATA_MESSAGE);
     }
 
     await Card.deleteOne({_id: id});
 
-    return res.status(constants.HTTP_STATUS_OK).send({ message: CARD_DELITION_SUCCESS_MESSAGE });
+    return res.status(constants.HTTP_STATUS_OK).send(CARD_DELITION_SUCCESS_MESSAGE);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send(INVALID_DATA_MESSAGE);
     }
     return next(error);
   }
@@ -68,12 +71,12 @@ export const likeCard = async (req: Request, res: Response, next: NextFunction) 
     },
   )
   if (!likeCard) {
-    return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
+    return res.status(constants.HTTP_STATUS_NOT_FOUND).send(CARD_NOT_FOUND_MESSAGE);
   }
     return res.status(constants.HTTP_STATUS_OK).send(likeCard);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send(INVALID_DATA_MESSAGE);
     }
     return next(error);
   }
@@ -92,12 +95,12 @@ export const dislikeCard = async (req: Request, res: Response, next: NextFunctio
     },
   )
   if (!dislikeCard) {
-    return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
+    return res.status(constants.HTTP_STATUS_NOT_FOUND).send(CARD_NOT_FOUND_MESSAGE);
   }
     return res.status(constants.HTTP_STATUS_OK).send(dislikeCard);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send(INVALID_DATA_MESSAGE);
     }
     return next(error);
   }

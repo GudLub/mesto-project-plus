@@ -13,7 +13,7 @@ try {
   if (error instanceof mongoose.Error.ValidationError) {
     return res
       .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({ ...error, message: VALIDATION_ERROR_MESSAGE });
+      .send({ ...error, VALIDATION_ERROR_MESSAGE });
   }
   return next(error);
 }
@@ -23,7 +23,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
   try {
     const users = await User.find({});
     if (!users) {
-      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: USERS_NOT_FOUND_MESSAGE });
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send(USERS_NOT_FOUND_MESSAGE);
     }
     return res.status(constants.HTTP_STATUS_OK).send(users);
   } catch (error) {
@@ -35,12 +35,12 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: STATUS_NOT_FOUND });
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send(STATUS_NOT_FOUND);
     }
     return res.status(constants.HTTP_STATUS_OK).send(user);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: INVALID_DATA_MESSAGE });
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).send(INVALID_DATA_MESSAGE);
     }
     return next(error);
   }
@@ -53,14 +53,14 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     runValidators: true,
   })
   if (!user) {
-    return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
+    return res.status(constants.HTTP_STATUS_NOT_FOUND).send(USER_NOT_FOUND_MESSAGE);
   }
 return res.status(constants.HTTP_STATUS_OK).send(user);
 } catch (error) {
   if (error instanceof mongoose.Error.ValidationError) {
     return res
       .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({ ...error, message: VALIDATION_ERROR_MESSAGE });
+      .send({ ...error, VALIDATION_ERROR_MESSAGE});
   }
   return next(error);
 }
