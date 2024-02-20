@@ -6,6 +6,7 @@ import {INVALID_ROUTE_MESSAGE } from "../utils/consts"
 
 const router = Router();
 
+
 router
 .use('/users', userRouter)
 .use('/cards', cardRouter)
