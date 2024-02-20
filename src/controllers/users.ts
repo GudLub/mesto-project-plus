@@ -38,9 +38,10 @@ export const createUser = async (
       email,
       password: hashedPassword,
     });
+    const { password, ...rest } = newUser.toObject();
     return res
     .status(constants.HTTP_STATUS_CREATED)
-    .send(newUser);
+    .send(rest);
   } catch (error: any) {
     if (error instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError(VALIDATION_ERROR_MESSAGE));
